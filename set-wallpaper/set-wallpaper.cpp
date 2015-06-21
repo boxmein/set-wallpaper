@@ -20,7 +20,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	LPWSTR filename = argv[1];
 
-	return doTheSetting(filename); 
+	return doTheSetting(filename);
 #endif
 }
 
@@ -29,7 +29,7 @@ int doTheSetting(LPWSTR filePath) {
 
 	if (fileAttrs == INVALID_FILE_ATTRIBUTES) {
 		DWORD err = GetLastError();
-		
+
 		if (err == 2) {
 			std::cerr << "File doesn't exist!";
 		}
@@ -56,13 +56,13 @@ int doTheSetting(LPWSTR filePath) {
 		}
 
 		BOOL result = SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, fullPath, SPIF_UPDATEINIFILE);
-	
+
 		if (!result) {
 			std::cerr  << "Something went wrong setting system parameters. (" << GetLastError() << ")\n";
 			std::wcerr << L"File path: " << fullPath << "\n";
 			std::cerr  << "File attributes: " << fileAttrs << "\n";
 		}
-		
+
 		return result ? 0 : 1;
 	}
 }
@@ -88,10 +88,9 @@ int setRandomFileIn(LPWSTR directory) {
 			(fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
 			bool is_image = false;
 			wchar_t* dot = wcsrchr(fdFile.cFileName, '.');
-			is_image = dot && (
-				wcscmp(dot, L".jpg") == 0 ||
-				wcscmp(dot, L".png") == 0 ||
-				wcscmp(dot, L".bmp") == 0);
+
+      // we'd have to convert otherwise
+			is_image = dot && (wcscmp(dot, L".jpg") == 0);
 
 			if (is_image) {
 				std::wstring filename(directory);
@@ -107,13 +106,13 @@ int setRandomFileIn(LPWSTR directory) {
 
 	int index = rand() % files.size();
 	const wchar_t* s = files[index].c_str();
-	
+
 	int len = wcslen(s) + 1;
 	wchar_t* buf = (wchar_t*) malloc(len * sizeof(wchar_t));
 
 	wcscpy_s(buf, (size_t) len, s);
 
-	std::wcout << buf << "\n"; 
-	
+	std::wcout << buf << "\n";
+
 	return doTheSetting((LPWSTR) buf);
 }
